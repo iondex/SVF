@@ -256,6 +256,11 @@ public:
         return nodeNum;
     }
 
+    inline bool hasDef(const PAGNode* pagNode) const
+    {
+        return VFG::hasDef(pagNode);
+    }
+
 protected:
     /// Add indirect def-use edges of a memory region between two statements,
     //@{
@@ -340,10 +345,6 @@ protected:
     inline NodeID getDef(const PAGNode* pagNode) const
     {
         return VFG::getDef(pagNode);
-    }
-    inline bool hasDef(const PAGNode* pagNode) const
-    {
-        return VFG::hasDef(pagNode);
     }
     //@}
 

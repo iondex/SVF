@@ -68,6 +68,16 @@ static bool hasEdge(const CHNode *src, const CHNode *dst,
     return false;
 }
 
+inline static ConstantStruct *wrapVtblArray(Value *op)
+{
+    StructType *wrapStructTy = StructType::create({op->getType()});
+    Constant *vtbl = SVFUtil::dyn_cast<ConstantArray>(op);
+    llvm::SmallVector<Constant *, 8> Values(1);
+    Values[0] = vtbl;
+    ConstantStruct *wrapStruct = SVFUtil::dyn_cast<ConstantStruct>(ConstantStruct::get(wrapStructTy, Values));
+    return wrapStruct;
+}
+
 void CHNode::getVirtualFunctions(u32_t idx, FuncVector &virtualFunctions) const
 {
     for (vector<FuncVector>::const_iterator it = virtualFunctionVectors.begin(),
@@ -120,7 +130,15 @@ void CHGraph::buildCHGNodes(const GlobalValue *globalvalue)
 {
     if (isValVtbl(globalvalue) && globalvalue->getNumOperands() > 0)
     {
-        const ConstantStruct *vtblStruct = SVFUtil::dyn_cast<ConstantStruct>(globalvalue->getOperand(0));
+        Value *firstOperand = globalvalue->getOperand(0);
+        const ConstantStruct *vtblStruct = nullptr;
+
+        // In older versions it is an ConstantArray, without struct wrap.
+        if (SVFUtil::isa<ConstantArray>(firstOperand)) {
+            vtblStruct = wrapVtblArray(firstOperand);
+        } else {
+            vtblStruct = SVFUtil::dyn_cast<ConstantStruct>(firstOperand);
+        }
         assert(vtblStruct && "Initializer of a vtable not a struct?");
         string className = getClassNameFromVtblObj(globalvalue);
         if (!getNode(className))
@@ -422,8 +440,15 @@ void CHGraph::analyzeVTables(const Module &M)
         const GlobalValue *globalvalue = SVFUtil::dyn_cast<const GlobalValue>(&(*I));
         if (isValVtbl(globalvalue) && globalvalue->getNumOperands() > 0)
         {
-            const ConstantStruct *vtblStruct =
-                SVFUtil::dyn_cast<ConstantStruct>(globalvalue->getOperand(0));
+            Value *firstOperand = globalvalue->getOperand(0);
+            const ConstantStruct *vtblStruct = nullptr;
+
+            // In older versions it is an ConstantArray, without struct wrap.
+            if (SVFUtil::isa<ConstantArray>(firstOperand)) {
+                vtblStruct = wrapVtblArray(firstOperand);
+            } else {
+                vtblStruct = SVFUtil::dyn_cast<ConstantStruct>(firstOperand);
+            }
             assert(vtblStruct && "Initializer of a vtable not a struct?");
 
             string vtblClassName = getClassNameFromVtblObj(globalvalue);

@@ -81,7 +81,7 @@ public:
         return fun;
     }
 
-    /// Return the function of this ICFGNode
+    /// Return the basic block of this ICFGNode
     virtual const BasicBlock* getBB() const
     {
         return bb;
@@ -360,26 +360,26 @@ public:
         bb = cs->getParent();
     }
 
-    /// Return callsite
+    /// Return CallSite
     inline const Instruction* getCallSite() const
     {
         return cs;
     }
 
-    /// Return callsite
+    /// Return RetBlockNode
     inline const RetBlockNode* getRetBlockNode() const
     {
     	assert(ret && "RetBlockNode not set?");
         return ret;
     }
 
-    /// Return callsite
+    /// Set RetBlockNode
     inline void setRetBlockNode(const RetBlockNode* r)
     {
         ret = r;
     }
 
-    /// Return callsite
+    /// Return Caller
     inline const SVFFunction* getCaller() const
     {
         return LLVMModuleSet::getLLVMModuleSet()->getSVFFunction(cs->getFunction());

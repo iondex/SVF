@@ -40,7 +40,7 @@ using namespace SVFUtil;
 using namespace cppUtil;
 using namespace std;
 
-llvm::cl::opt<bool> genICFG("genicfg", llvm::cl::init(true), llvm::cl::desc("Generate ICFG graph"));
+llvm::cl::opt<bool> genICFG("genicfg", llvm::cl::init(false), llvm::cl::desc("Generate ICFG graph"));
 
 /// Initialize analysis
 void TypeAnalysis::initialize()

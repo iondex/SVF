@@ -395,7 +395,8 @@ struct DOTGraphTraits<PTACallGraph*> : public DefaultDOTGraphTraits
         raw_string_ostream rawstr(str);
         rawstr << edge->getCallSiteID();
 
-        return rawstr.str();
+        // return rawstr.str();
+        return "";
     }
 };
 } // End namespace llvm

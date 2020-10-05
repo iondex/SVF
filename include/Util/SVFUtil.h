@@ -203,6 +203,7 @@ inline const SVFFunction* getCallee(const CallSite cs)
 {
     // FIXME: do we need to strip-off the casts here to discover more library functions
     Function *callee = SVFUtil::dyn_cast<Function>(cs.getCalledValue()->stripPointerCasts());
+    if (callee == NULL) callee = SVFUtil::dyn_cast<Function>(cs.getCalledValue()->stripPointerCastsAndAliases());
     return getDefFunForMultipleModule(callee);
 }
 

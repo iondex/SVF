@@ -8,6 +8,8 @@ Debug+Asserts/
 autoconf/
 tests/result/
 doxygen/
+.vscode/
+llvm-10.0.0.obj/
 .*
 !.gitignore
 *~
@@ -18,3 +20,5 @@ doxygen/
 *.opt
 *.log
 *.status
+*.patch
+llvm.tar.xz
